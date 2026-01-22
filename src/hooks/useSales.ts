@@ -38,6 +38,7 @@ export interface CartItem {
 }
 
 export interface CreateSaleInput {
+  customer_id?: string;
   customer_name?: string;
   customer_phone?: string;
   discount_pkr?: number;
@@ -133,6 +134,7 @@ export function useCreateSale() {
         .from('sales')
         .insert({
           sale_number: saleNumber,
+          customer_id: input.customer_id || null,
           customer_name: input.customer_name || null,
           customer_phone: input.customer_phone || null,
           subtotal_pkr: subtotal,

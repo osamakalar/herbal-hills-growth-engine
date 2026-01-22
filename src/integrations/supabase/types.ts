@@ -47,6 +47,60 @@ export type Database = {
         }
         Relationships: []
       }
+      customers: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          full_name: string
+          id: string
+          is_active: boolean
+          loyalty_points: number
+          loyalty_tier: Database["public"]["Enums"]["loyalty_tier"]
+          notes: string | null
+          phone: string | null
+          total_orders: number
+          total_purchases_pkr: number
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          is_active?: boolean
+          loyalty_points?: number
+          loyalty_tier?: Database["public"]["Enums"]["loyalty_tier"]
+          notes?: string | null
+          phone?: string | null
+          total_orders?: number
+          total_purchases_pkr?: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          is_active?: boolean
+          loyalty_points?: number
+          loyalty_tier?: Database["public"]["Enums"]["loyalty_tier"]
+          notes?: string | null
+          phone?: string | null
+          total_orders?: number
+          total_purchases_pkr?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string | null
@@ -180,6 +234,7 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          customer_id: string | null
           customer_name: string | null
           customer_phone: string | null
           discount_pkr: number
@@ -195,6 +250,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          customer_id?: string | null
           customer_name?: string | null
           customer_phone?: string | null
           discount_pkr?: number
@@ -210,6 +266,7 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          customer_id?: string | null
           customer_name?: string | null
           customer_phone?: string | null
           discount_pkr?: number
@@ -222,7 +279,15 @@ export type Database = {
           total_pkr?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "sales_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -265,6 +330,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "manager" | "counter_staff" | "health_rep"
+      loyalty_tier: "bronze" | "silver" | "gold" | "platinum"
       payment_method: "cash" | "card" | "bank_transfer" | "mobile_wallet"
       sale_status: "pending" | "completed" | "cancelled" | "refunded"
     }
@@ -395,6 +461,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "manager", "counter_staff", "health_rep"],
+      loyalty_tier: ["bronze", "silver", "gold", "platinum"],
       payment_method: ["cash", "card", "bank_transfer", "mobile_wallet"],
       sale_status: ["pending", "completed", "cancelled", "refunded"],
     },
