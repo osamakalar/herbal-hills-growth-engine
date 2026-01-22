@@ -59,7 +59,7 @@ const menuItems = {
     { title: 'My Sales', icon: ShoppingCart, href: '/my-sales' },
     { title: 'Appointments', icon: Calendar, href: '/appointments' },
     { title: 'Customers', icon: Users, href: '/customers' },
-    { title: 'My Performance', icon: Target, href: '/my-performance' },
+    { title: 'My Commission', icon: DollarSign, href: '/commissions' },
   ],
 };
 

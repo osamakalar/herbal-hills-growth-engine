@@ -14,6 +14,123 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          commission_pkr: number | null
+          created_at: string
+          customer_id: string | null
+          customer_name: string
+          id: string
+          notes: string | null
+          sale_id: string | null
+          scheduled_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          commission_pkr?: number | null
+          created_at?: string
+          customer_id?: string | null
+          customer_name: string
+          id?: string
+          notes?: string | null
+          sale_id?: string | null
+          scheduled_at: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          commission_pkr?: number | null
+          created_at?: string
+          customer_id?: string | null
+          customer_name?: string
+          id?: string
+          notes?: string | null
+          sale_id?: string | null
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      commissions: {
+        Row: {
+          achieved_amount_pkr: number
+          achievement_percentage: number
+          appointment_commission_pkr: number
+          appointment_sales_pkr: number
+          created_at: string
+          domestic_commission_pkr: number
+          domestic_sales_pkr: number
+          id: string
+          international_commission_pkr: number
+          international_sales_pkr: number
+          is_family_dinner: boolean
+          is_released: boolean
+          month: string
+          target_amount_pkr: number
+          total_commission_pkr: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achieved_amount_pkr?: number
+          achievement_percentage?: number
+          appointment_commission_pkr?: number
+          appointment_sales_pkr?: number
+          created_at?: string
+          domestic_commission_pkr?: number
+          domestic_sales_pkr?: number
+          id?: string
+          international_commission_pkr?: number
+          international_sales_pkr?: number
+          is_family_dinner?: boolean
+          is_released?: boolean
+          month: string
+          target_amount_pkr?: number
+          total_commission_pkr?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achieved_amount_pkr?: number
+          achievement_percentage?: number
+          appointment_commission_pkr?: number
+          appointment_sales_pkr?: number
+          created_at?: string
+          domestic_commission_pkr?: number
+          domestic_sales_pkr?: number
+          id?: string
+          international_commission_pkr?: number
+          international_sales_pkr?: number
+          is_family_dinner?: boolean
+          is_released?: boolean
+          month?: string
+          target_amount_pkr?: number
+          total_commission_pkr?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       currency_settings: {
         Row: {
           currency_code: string
@@ -234,6 +351,7 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          currency: string
           customer_id: string | null
           customer_name: string | null
           customer_phone: string | null
@@ -250,6 +368,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          currency?: string
           customer_id?: string | null
           customer_name?: string | null
           customer_phone?: string | null
@@ -266,6 +385,7 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          currency?: string
           customer_id?: string | null
           customer_name?: string | null
           customer_phone?: string | null
@@ -288,6 +408,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      targets: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          month: string
+          target_amount_pkr: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          month: string
+          target_amount_pkr?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          month?: string
+          target_amount_pkr?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
