@@ -6,6 +6,7 @@ import {
   useMyFieldSalesSummary,
 } from '@/hooks/useFieldSales';
 import { FieldSaleDialog } from '@/components/field-sales/FieldSaleDialog';
+import { ReceiptPreviewDialog } from '@/components/field-sales/ReceiptPreviewDialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +27,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Calendar,
+  Receipt,
 } from 'lucide-react';
 import { format, startOfMonth, addMonths, subMonths } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -47,9 +49,16 @@ export default function MySales() {
   const { role, loading: authLoading } = useAuth();
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [showNewSale, setShowNewSale] = useState(false);
+  const [selectedSale, setSelectedSale] = useState<typeof sales extends (infer T)[] | undefined ? T : never>(null);
+  const [showReceipt, setShowReceipt] = useState(false);
 
   const { data: sales, isLoading: loadingSales } = useMyFieldSales(selectedMonth);
   const { data: summary, isLoading: loadingSummary } = useMyFieldSalesSummary(selectedMonth);
+
+  const handleViewReceipt = (sale: typeof selectedSale) => {
+    setSelectedSale(sale);
+    setShowReceipt(true);
+  };
 
   if (authLoading) {
     return (
@@ -219,6 +228,7 @@ export default function MySales() {
                     <TableHead>Payment</TableHead>
                     <TableHead className="text-right">Amount (PKR)</TableHead>
                     <TableHead className="text-center">Status</TableHead>
+                    <TableHead className="text-center">Receipt</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -261,6 +271,16 @@ export default function MySales() {
                           {sale.status}
                         </Badge>
                       </TableCell>
+                      <TableCell className="text-center">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleViewReceipt(sale)}
+                          title="View Receipt"
+                        >
+                          <Receipt className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -272,6 +292,13 @@ export default function MySales() {
 
       {/* Field Sale Dialog */}
       <FieldSaleDialog open={showNewSale} onOpenChange={setShowNewSale} />
+
+      {/* Receipt Preview Dialog */}
+      <ReceiptPreviewDialog
+        sale={selectedSale}
+        open={showReceipt}
+        onOpenChange={setShowReceipt}
+      />
     </div>
   );
 }
