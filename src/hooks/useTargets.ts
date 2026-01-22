@@ -58,11 +58,10 @@ export function useTargetsWithProgress(month?: Date) {
 
       if (targetError) throw targetError;
 
-      // Get team members
+      // Get all team members (not just health_rep for demo purposes)
       const { data: teamMembers, error: teamError } = await supabase
         .from('team_members')
-        .select('*')
-        .eq('role', 'health_rep');
+        .select('*');
 
       if (teamError) throw teamError;
 
@@ -138,11 +137,10 @@ export function useQuarterlyTargets(quarter?: Date) {
 
       if (targetError) throw targetError;
 
-      // Get team members
+      // Get all team members (not just health_rep for demo purposes)
       const { data: teamMembers, error: teamError } = await supabase
         .from('team_members')
-        .select('*')
-        .eq('role', 'health_rep');
+        .select('*');
 
       if (teamError) throw teamError;
 
@@ -254,11 +252,10 @@ export function useBulkSetTargets() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      // Get all health reps
+      // Get all team members (not just health_rep for demo purposes)
       const { data: healthReps, error: repError } = await supabase
         .from('team_members')
-        .select('user_id')
-        .eq('role', 'health_rep');
+        .select('user_id');
 
       if (repError) throw repError;
 
