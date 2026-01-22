@@ -128,6 +128,102 @@ export type Database = {
         }
         Relationships: []
       }
+      sale_items: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          product_name: string
+          quantity: number
+          sale_id: string
+          total_pkr: number
+          unit_price_pkr: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          product_name: string
+          quantity?: number
+          sale_id: string
+          total_pkr: number
+          unit_price_pkr: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          product_name?: string
+          quantity?: number
+          sale_id?: string
+          total_pkr?: number
+          unit_price_pkr?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sale_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sale_items_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          discount_pkr: number
+          id: string
+          notes: string | null
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          sale_number: string
+          status: Database["public"]["Enums"]["sale_status"]
+          subtotal_pkr: number
+          total_pkr: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          discount_pkr?: number
+          id?: string
+          notes?: string | null
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          sale_number: string
+          status?: Database["public"]["Enums"]["sale_status"]
+          subtotal_pkr?: number
+          total_pkr?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          discount_pkr?: number
+          id?: string
+          notes?: string | null
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          sale_number?: string
+          status?: Database["public"]["Enums"]["sale_status"]
+          subtotal_pkr?: number
+          total_pkr?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -154,6 +250,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_sale_number: { Args: never; Returns: string }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -168,6 +265,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "manager" | "counter_staff" | "health_rep"
+      payment_method: "cash" | "card" | "bank_transfer" | "mobile_wallet"
+      sale_status: "pending" | "completed" | "cancelled" | "refunded"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -296,6 +395,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "manager", "counter_staff", "health_rep"],
+      payment_method: ["cash", "card", "bank_transfer", "mobile_wallet"],
+      sale_status: ["pending", "completed", "cancelled", "refunded"],
     },
   },
 } as const
