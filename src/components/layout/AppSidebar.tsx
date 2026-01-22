@@ -1,5 +1,6 @@
+import { forwardRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import {
   Sidebar,
   SidebarContent,
@@ -51,6 +52,7 @@ const menuItems = {
     { title: 'Analytics', icon: BarChart3, href: '/analytics' },
   ],
   counter_staff: [
+    { title: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
     { title: 'POS', icon: ShoppingCart, href: '/pos' },
     { title: 'Inventory', icon: Package, href: '/inventory' },
   ],
@@ -63,7 +65,7 @@ const menuItems = {
   ],
 };
 
-export function AppSidebar() {
+export const AppSidebar = forwardRef<HTMLDivElement>((_, ref) => {
   const { profile, role, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -98,9 +100,9 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar>
+    <Sidebar ref={ref}>
       <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-3">
+        <Link to="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-sidebar-primary to-accent flex items-center justify-center">
             <Leaf className="h-5 w-5 text-sidebar-primary-foreground" />
           </div>
@@ -108,7 +110,7 @@ export function AppSidebar() {
             <h1 className="font-bold text-lg text-sidebar-foreground">Herbal Hills</h1>
             <p className="text-xs text-sidebar-foreground/60">Management System</p>
           </div>
-        </div>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>
@@ -123,10 +125,10 @@ export function AppSidebar() {
                     isActive={location.pathname === item.href}
                     tooltip={item.title}
                   >
-                    <a href={item.href}>
+                    <Link to={item.href}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -163,4 +165,6 @@ export function AppSidebar() {
       </SidebarFooter>
     </Sidebar>
   );
-}
+});
+
+AppSidebar.displayName = 'AppSidebar';
