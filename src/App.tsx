@@ -13,8 +13,10 @@ import Team from "./pages/Team";
 import Analytics from "./pages/Analytics";
 import Commissions from "./pages/Commissions";
 import Targets from "./pages/Targets";
+import MySales from "./pages/MySales";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -35,6 +37,7 @@ const App = () => (
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/commissions" element={<Commissions />} />
             <Route path="/targets" element={<Targets />} />
+            <Route path="/my-sales" element={<MySales />} />
             <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
