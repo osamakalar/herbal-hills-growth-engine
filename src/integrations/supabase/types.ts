@@ -312,7 +312,20 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      team_members: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          full_name: string | null
+          is_active: boolean | null
+          phone: string | null
+          profile_id: string | null
+          role: Database["public"]["Enums"]["app_role"] | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       generate_sale_number: { Args: never; Returns: string }
@@ -326,6 +339,13 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      update_user_role: {
+        Args: {
+          _new_role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
