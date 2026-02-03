@@ -78,12 +78,16 @@ serve(async (req) => {
     const totalTarget = targets?.reduce((sum, t) => sum + Number(t.target_amount_pkr), 0) || 0;
     const targetProgress = totalTarget > 0 ? Math.round((monthTotal / totalTarget) * 100) : 0;
 
-    // 4. Get low stock products
-    const { data: lowStockProducts, error: stockError } = await supabase
+    // 4. Get low stock products (stock_quantity <= low_stock_threshold)
+    const { data: allProducts, error: stockError } = await supabase
       .from("products")
       .select("name, stock_quantity, low_stock_threshold")
-      .eq("is_active", true)
-      .filter("stock_quantity", "lte", "low_stock_threshold");
+      .eq("is_active", true);
+
+    // Filter in code since we can't compare two columns in Supabase
+    const lowStockProducts = allProducts?.filter(
+      (p) => p.stock_quantity <= p.low_stock_threshold
+    ) || [];
 
     if (stockError) throw stockError;
 
@@ -153,15 +157,23 @@ serve(async (req) => {
 
     report += `\n_Report generated at ${format(now, "HH:mm")} PKT_`;
 
-    console.log("Sending daily report:", report);
+    console.log("Sending daily report to:", REPORT_WHATSAPP_NUMBER);
+    console.log("Report content:", report);
 
     // Send via Twilio
     const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
     
-    // Format recipient number for WhatsApp
+    // Format numbers for WhatsApp
     const toNumber = REPORT_WHATSAPP_NUMBER.startsWith("whatsapp:") 
       ? REPORT_WHATSAPP_NUMBER 
       : `whatsapp:${REPORT_WHATSAPP_NUMBER}`;
+    
+    const fromNumber = TWILIO_WHATSAPP_NUMBER.startsWith("whatsapp:") 
+      ? TWILIO_WHATSAPP_NUMBER 
+      : `whatsapp:${TWILIO_WHATSAPP_NUMBER}`;
+
+    console.log("Formatted To number:", toNumber);
+    console.log("Formatted From number:", fromNumber);
 
     const twilioResponse = await fetch(twilioUrl, {
       method: "POST",
@@ -171,18 +183,18 @@ serve(async (req) => {
       },
       body: new URLSearchParams({
         To: toNumber,
-        From: TWILIO_WHATSAPP_NUMBER,
+        From: fromNumber,
         Body: report,
       }),
     });
 
+    const twilioData = await twilioResponse.json();
+
     if (!twilioResponse.ok) {
-      const twilioError = await twilioResponse.text();
-      console.error("Twilio error:", twilioError);
-      throw new Error(`Failed to send WhatsApp report: ${twilioResponse.status}`);
+      console.error("Twilio error response:", JSON.stringify(twilioData));
+      throw new Error(`Twilio error: ${twilioData.message || twilioData.error_message || JSON.stringify(twilioData)}`);
     }
 
-    const twilioData = await twilioResponse.json();
     console.log("Report sent successfully:", twilioData.sid);
 
     return new Response(
