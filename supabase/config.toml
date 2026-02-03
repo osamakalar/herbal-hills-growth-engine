@@ -5,3 +5,7 @@ verify_jwt = false
 
 [functions.daily-report]
 verify_jwt = false
+
+[functions.dashboard-chat]
+verify_jwt = false
+verify_jwt = false
