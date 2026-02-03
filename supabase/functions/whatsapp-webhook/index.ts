@@ -312,8 +312,13 @@ serve(async (req) => {
 
     console.log(`Received message from ${fromNumber}: ${incomingMessage}`);
 
-    if (!incomingMessage || !fromNumber) {
-      return new Response("Missing message or sender", { status: 400 });
+    // Ignore empty messages or status callbacks
+    if (!incomingMessage || incomingMessage === "null" || !fromNumber) {
+      console.log("Ignoring empty message or status callback");
+      return new Response(
+        `<?xml version="1.0" encoding="UTF-8"?><Response></Response>`,
+        { headers: { ...corsHeaders, "Content-Type": "application/xml" } }
+      );
     }
 
     // Initialize Supabase client
@@ -406,11 +411,14 @@ serve(async (req) => {
       }),
     });
 
+    const twilioData = await twilioResponse.json();
+    
     if (!twilioResponse.ok) {
-      const twilioError = await twilioResponse.text();
-      console.error("Twilio error:", twilioError);
-      throw new Error(`Failed to send WhatsApp message: ${twilioResponse.status}`);
+      console.error("Twilio error:", JSON.stringify(twilioData));
+      throw new Error(`Failed to send WhatsApp message: ${twilioResponse.status} - ${twilioData.message || 'Unknown error'}`);
     }
+    
+    console.log("Message sent successfully! SID:", twilioData.sid);
 
     // Return TwiML response (Twilio expects this)
     return new Response(
